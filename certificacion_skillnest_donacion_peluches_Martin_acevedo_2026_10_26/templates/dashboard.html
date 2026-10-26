@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donación de Peluches</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+  <main class="contenedor">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="mensajes">
+          {% for category, message in messages %}
+            <p class="{{ category }}">{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <header class="encabezado">
+      <h1>Bienvenido@ {{ g.user["nombre"] }}</h1>
+      <div class="botones">
+        <a href="{{ url_for('nueva') }}" class="boton">Donar Peluche</a>
+        <a href="{{ url_for('logout') }}" class="boton">Cerrar Sesión</a>
+      </div>
+    </header>
+
+    <h2>Todos los Peluches</h2>
+
+    <ul class="lista">
+      {% for peluche in peluches %}
+      <li class="fila">
+        <strong class="peluche">{{ peluche["nombre"] }}</strong>
+        <span class="donador">Donador: {{ peluche["donador_nombre"] }} {{ peluche["donador_apellido"] }}</span>
+        <a href="{{ url_for('ver', peluche_id=peluche['id']) }}" class="enlace">Ver</a>
+        <div class="acciones">
+          {% if peluche["adoptado_por"] %}
+            <button class="boton gris" disabled>ADOPTADO</button>
+          {% elif peluche["usuario_id"] != g.user["id"] %}
+            <form action="{{ url_for('adoptar', peluche_id=peluche['id']) }}" method="post">
+              <button class="boton gris" type="submit">Adoptar</button>
+            </form>
+          {% else %}
+            <a href="{{ url_for('editar', peluche_id=peluche['id']) }}" class="boton">Editar</a>
+            <form action="{{ url_for('borrar', peluche_id=peluche['id']) }}" method="post">
+              <button class="boton" type="submit">Borrar</button>
+            </form>
+          {% endif %}
+        </div>
+      </li>
+      {% else %}
+        <li class="fila">Todavía no hay peluches registrados.</li>
+      {% endfor %}
+    </ul>
+
+  </main>
+</body>
+</html>

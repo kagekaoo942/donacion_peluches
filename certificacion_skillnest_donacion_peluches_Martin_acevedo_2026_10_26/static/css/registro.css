@@ -1,0 +1,116 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --fondo: #f4f1fb;
+  --tarjeta: #ffffff;
+  --primario: #7c5cbf;
+  --primario-oscuro: #5f449c;
+  --texto: #2d2640;
+  --borde: #cfc6e6;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px 20px;
+}
+
+.contenedor {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  background: var(--tarjeta);
+  border: 2px solid var(--borde);
+  border-radius: 14px;
+  padding: 40px 50px;
+  box-shadow: 0 8px 24px rgba(124, 92, 191, 0.12);
+}
+
+.panel {
+  flex: 1;
+}
+
+.panel:first-child {
+  border-right: 1px solid var(--borde);
+  padding-right: 40px;
+}
+
+h1 {
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin-bottom: 26px;
+  color: var(--primario-oscuro);
+}
+
+.formulario {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  align-items: center;
+  gap: 16px 14px;
+}
+
+label {
+  font-size: 0.95rem;
+}
+
+input {
+  width: 100%;
+  height: 34px;
+  border: 1.5px solid var(--borde);
+  border-radius: 6px;
+  padding: 0 10px;
+  font-size: 0.95rem;
+  background: #fff;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primario);
+  box-shadow: 0 0 0 3px rgba(124, 92, 191, 0.2);
+}
+
+.acciones {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+button {
+  background: var(--primario);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 26px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: var(--primario-oscuro);
+}
+
+@media (max-width: 760px) {
+  .contenedor {
+    flex-direction: column;
+    padding: 30px 24px;
+  }
+  .panel:first-child {
+    border-right: none;
+    border-bottom: 1px solid var(--borde);
+    padding-right: 0;
+    padding-bottom: 30px;
+  }
+}

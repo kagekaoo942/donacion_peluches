@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ver Donación</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ver.css') }}">
+</head>
+<body>
+  <main class="contenedor">
+
+    <nav class="botones">
+      <a href="{{ url_for('dashboard') }}" class="boton">Inicio</a>
+      <a href="{{ url_for('logout') }}" class="boton">Cerrar Sesión</a>
+    </nav>
+
+    <article class="detalle">
+      <h1>{{ peluche["nombre"] }}</h1>
+
+      <dl class="datos">
+        <dt>Dueño:</dt>
+        <dd>{{ peluche["donador_nombre"] }} {{ peluche["donador_apellido"] }}</dd>
+
+        <dt>Descripción:</dt>
+        <dd>{{ peluche["descripcion"] }}</dd>
+      </dl>
+
+      <div class="dato-destacado">
+        <span>Adoptado por:</span>
+        <span>
+          {% if peluche["adoptante_nombre"] %}
+            {{ peluche["adoptante_nombre"] }} {{ peluche["adoptante_apellido"] }}
+          {% else %}
+            Nadie
+          {% endif %}
+        </span>
+      </div>
+
+      <div class="dato-destacado">
+        <span>Visitas:</span>
+        <span>{{ peluche["visitas"] }}</span>
+      </div>
+    </article>
+
+  </main>
+</body>
+</html>

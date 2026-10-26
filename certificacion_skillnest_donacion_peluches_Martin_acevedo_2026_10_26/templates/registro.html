@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donación de Peluches</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/registro.css') }}">
+</head>
+<body>
+  <main class="contenedor">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="mensajes">
+          {% for category, message in messages %}
+            <p class="{{ category }}">{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <section class="panel">
+      <h1>Registro</h1>
+      <form action="{{ url_for('registro') }}" method="post" class="formulario">
+        <input type="hidden" name="formulario" value="registro">
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" name="nombre" required minlength="2">
+
+        <label for="apellido">Apellido</label>
+        <input type="text" id="apellido" name="apellido" required minlength="2">
+
+        <label for="email_registro">E-mail</label>
+        <input type="email" id="email_registro" name="email" required>
+
+        <label for="password_registro">Contraseña</label>
+        <input type="password" id="password_registro" name="password" required minlength="7">
+
+        <label for="confirmar">Conf. Contraseña</label>
+        <input type="password" id="confirmar" name="confirmar" required minlength="7">
+
+        <div class="acciones">
+          <button type="submit">Registrar</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h1>Inicio de Sesión</h1>
+      <form action="{{ url_for('registro') }}" method="post" class="formulario">
+        <input type="hidden" name="formulario" value="login">
+        <label for="email_login">E-mail</label>
+        <input type="email" id="email_login" name="email" required>
+
+        <label for="password_login">Contraseña</label>
+        <input type="password" id="password_login" name="password" required>
+
+        <div class="acciones">
+          <button type="submit">Iniciar Sesión</button>
+        </div>
+      </form>
+    </section>
+
+  </main>
+</body>
+</html>

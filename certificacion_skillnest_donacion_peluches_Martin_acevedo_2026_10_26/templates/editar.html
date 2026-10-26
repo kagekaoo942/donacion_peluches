@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Donación</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/editar.css') }}">
+</head>
+<body>
+  <main class="contenedor">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}<p class="{{ category }}">{{ message }}</p>{% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <header class="encabezado">
+      <h1>Editar Donación</h1>
+      <div class="botones">
+        <a href="{{ url_for('dashboard') }}" class="boton">Inicio</a>
+        <a href="{{ url_for('logout') }}" class="boton">Cerrar Sesión</a>
+      </div>
+    </header>
+
+    <form action="{{ url_for('editar', peluche_id=peluche['id']) }}" method="post" class="formulario">
+      <label for="nombre">Nombre</label>
+      <input type="text" id="nombre" name="nombre" value="{{ form_data['nombre'] }}" required minlength="2">
+
+      <label for="descripcion">Descripción:</label>
+      <textarea id="descripcion" name="descripcion" required>{{ form_data['descripcion'] }}</textarea>
+
+      <div class="acciones">
+        <button type="submit" class="boton">Guardar</button>
+      </div>
+    </form>
+
+  </main>
+</body>
+</html>

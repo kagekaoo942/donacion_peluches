@@ -1,0 +1,138 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --fondo: #f4f1fb;
+  --tarjeta: #ffffff;
+  --primario: #7c5cbf;
+  --primario-oscuro: #5f449c;
+  --texto: #2d2640;
+  --borde: #cfc6e6;
+  --gris: #9a93ab;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px 20px;
+}
+
+.contenedor {
+  width: 100%;
+  max-width: 900px;
+  background: var(--tarjeta);
+  border: 2px solid var(--borde);
+  border-radius: 14px;
+  padding: 36px 44px 44px;
+  box-shadow: 0 8px 24px rgba(124, 92, 191, 0.12);
+}
+
+.encabezado {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 26px;
+}
+
+.encabezado h1 {
+  font-size: 1.7rem;
+  font-weight: 500;
+  color: var(--primario-oscuro);
+}
+
+.botones {
+  display: flex;
+  gap: 10px;
+}
+
+h2 {
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+.boton {
+  display: inline-block;
+  background: #fff;
+  color: var(--texto);
+  border: 1.5px solid var(--primario);
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.boton:hover {
+  background: var(--primario);
+  color: #fff;
+}
+
+.boton.gris {
+  background: var(--gris);
+  border-color: var(--gris);
+  color: #fff;
+}
+
+.boton.gris:hover {
+  background: #7d7690;
+  border-color: #7d7690;
+}
+
+.boton:disabled {
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+.lista {
+  list-style: none;
+  border-top: 1px solid var(--borde);
+}
+
+.fila {
+  display: grid;
+  grid-template-columns: 190px 1fr 50px 190px;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 4px;
+  border-bottom: 1px solid var(--borde);
+}
+
+.peluche {
+  padding-right: 14px;
+  border-right: 1px solid var(--borde);
+}
+
+.enlace {
+  color: #1a5fd0;
+  text-decoration: underline;
+}
+
+.acciones {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+@media (max-width: 760px) {
+  .encabezado {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .fila {
+    grid-template-columns: 1fr 1fr;
+  }
+  .peluche {
+    border-right: none;
+  }
+}
