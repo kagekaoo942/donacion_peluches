@@ -27,14 +27,38 @@ body {
 .contenedor {
   width: 100%;
   max-width: 900px;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 40px;
   background: var(--tarjeta);
   border: 2px solid var(--borde);
   border-radius: 14px;
   padding: 40px 50px;
   box-shadow: 0 8px 24px rgba(124, 92, 191, 0.12);
+}
+
+.mensajes {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.mensajes p {
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.mensajes .success {
+  background: #e8f7ed;
+  color: #216b38;
+  border: 1px solid #a9dfb8;
+}
+
+.mensajes .error {
+  background: #fdecec;
+  color: #a52222;
+  border: 1px solid #efb1b1;
 }
 
 .panel {
@@ -104,6 +128,7 @@ button:hover {
 
 @media (max-width: 760px) {
   .contenedor {
+    display: flex;
     flex-direction: column;
     padding: 30px 24px;
   }

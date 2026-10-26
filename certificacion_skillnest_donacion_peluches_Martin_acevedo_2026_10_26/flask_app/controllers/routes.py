@@ -12,13 +12,15 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from models.database import get_db
-from models.validators import clean, validate_person_data, validate_toy_data
+from flask_app.models.database import get_db
+from flask_app.models.validators import clean, validate_person_data, validate_toy_data
 
 
 def login_required(view):
     @wraps(view)
     def wrapped_view(*args, **kwargs):
+        # No alcanza con ocultar botones en HTML: la ruta también debe
+        # comprobar la sesión por si alguien escribe la URL manualmente.
         if g.user is None:
             flash("Debes iniciar sesion para ver esta pagina.", "error")
             return redirect(url_for("registro"))
@@ -30,6 +32,8 @@ def login_required(view):
 def register_routes(app: Flask):
     @app.before_request
     def load_logged_user():
+        # Recuperamos al usuario antes de cada vista para que todas las
+        # plantillas conozcan quién está conectado.
         user_id = session.get("user_id")
         g.user = None
         if user_id is not None:
@@ -47,6 +51,8 @@ def register_routes(app: Flask):
     @app.route("/registro", methods=["GET", "POST"])
     def registro():
         if request.method == "POST":
+            # Los dos formularios viven en la misma pantalla; este campo
+            # oculto nos dice si se intentó registrar o iniciar sesión.
             if request.form.get("formulario") == "login":
                 email = clean(request.form.get("email")).lower()
                 password = request.form.get("password", "")
@@ -71,6 +77,8 @@ def register_routes(app: Flask):
                     errors.append("El email ya esta registrado.")
                 if not errors:
                     db = get_db()
+                    # Nunca guardamos la contraseña original: solo almacenamos
+                    # un hash que luego se puede verificar durante el login.
                     db.execute(
                         "INSERT INTO usuarios "
                         "(nombre, apellido, email, password) VALUES (?, ?, ?, ?)",
@@ -166,6 +174,8 @@ def register_routes(app: Flask):
     @app.post("/borrar/<int:peluche_id>")
     @login_required
     def borrar(peluche_id):
+        # La donación pertenece a su creador; otro usuario no debe poder
+        # modificarla o eliminarla cambiando el número de la URL.
         db = get_db()
         peluche = db.execute(
             "SELECT usuario_id FROM peluches WHERE id = ?", (peluche_id,)
@@ -206,6 +216,7 @@ def register_routes(app: Flask):
     @app.get("/ver/<int:peluche_id>")
     @login_required
     def ver(peluche_id):
+        # Cada visita se registra antes de mostrar el detalle actualizado.
         db = get_db()
         peluche = db.execute(
             """

@@ -6,6 +6,8 @@ def clean(value):
 
 
 def validate_person_data(form):
+    # Validamos en el servidor aunque el HTML también tenga required/minlength:
+    # el navegador ayuda al usuario, pero no puede ser nuestra única defensa.
     nombre = clean(form.get("nombre"))
     apellido = clean(form.get("apellido"))
     email = clean(form.get("email")).lower()
@@ -27,6 +29,8 @@ def validate_person_data(form):
 
 
 def validate_toy_data(form):
+    # El nombre identifica al peluche y la descripción es lo que se mostrará
+    # en la pantalla de detalle; ambos son necesarios para una donación útil.
     nombre = clean(form.get("nombre"))
     descripcion = clean(form.get("descripcion"))
     errors = []
