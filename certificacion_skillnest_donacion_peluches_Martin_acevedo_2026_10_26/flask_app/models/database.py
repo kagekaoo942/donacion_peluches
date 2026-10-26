@@ -22,16 +22,35 @@ class Database:
         self.connection.close()
 
 
+def connection_options(host, port, user, password, database=None, ssl_ca=None):
+    options = {
+        "host": host,
+        "port": port,
+        "user": user,
+        "password": password,
+    }
+    if database:
+        options["database"] = database
+    if ssl_ca:
+        options["ssl_ca"] = ssl_ca
+        options["ssl_verify_cert"] = True
+        options["ssl_verify_identity"] = True
+    return options
+
+
 def get_db():
     # Una conexión por petición evita abrir conexiones nuevas en cada consulta
     # y permite cerrarla de forma ordenada al terminar la petición.
     if "db" not in g:
         connection = mysql.connector.connect(
-            host=current_app.config["MYSQL_HOST"],
-            port=current_app.config["MYSQL_PORT"],
-            user=current_app.config["MYSQL_USER"],
-            password=current_app.config["MYSQL_PASSWORD"],
-            database=current_app.config["MYSQL_DATABASE"],
+            **connection_options(
+                current_app.config["MYSQL_HOST"],
+                current_app.config["MYSQL_PORT"],
+                current_app.config["MYSQL_USER"],
+                current_app.config["MYSQL_PASSWORD"],
+                current_app.config["MYSQL_DATABASE"],
+                current_app.config["MYSQL_SSL_CA"],
+            )
         )
         g.db = Database(connection)
     return g.db
@@ -43,15 +62,12 @@ def close_db(exception=None):
         db.close()
 
 
-def init_db(schema_file, host, port, user, password, database):
+def init_db(schema_file, host, port, user, password, database, ssl_ca=None):
     # El esquema vive en un archivo SQL para que también pueda ejecutarse
     # directamente desde MySQL Workbench y no quede escondido en Python.
     schema = Path(schema_file).read_text(encoding="utf-8")
     connection = mysql.connector.connect(
-        host=host,
-        port=port,
-        user=user,
-        password=password,
+        **connection_options(host, port, user, password, ssl_ca=ssl_ca)
     )
     cursor = connection.cursor()
     try:

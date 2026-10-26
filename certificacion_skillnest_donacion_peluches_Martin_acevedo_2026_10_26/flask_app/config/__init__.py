@@ -35,6 +35,9 @@ def create_app():
     )
     if not schema_path.is_absolute():
         schema_path = BASE_DIR / schema_path
+    ssl_ca_path = os.environ.get("MYSQL_SSL_CA", "").strip()
+    if ssl_ca_path:
+        ssl_ca_path = str(Path(ssl_ca_path).resolve())
 
     app = Flask(
         __name__,
@@ -51,6 +54,7 @@ def create_app():
         MYSQL_USER=os.environ.get("MYSQL_USER", "root"),
         MYSQL_PASSWORD=os.environ.get("MYSQL_PASSWORD", ""),
         MYSQL_DATABASE=os.environ.get("MYSQL_DATABASE", "peluches_donacion"),
+        MYSQL_SSL_CA=ssl_ca_path,
     )
 
     app.teardown_appcontext(close_db)
@@ -65,6 +69,7 @@ def create_app():
             app.config["MYSQL_USER"],
             app.config["MYSQL_PASSWORD"],
             app.config["MYSQL_DATABASE"],
+            app.config["MYSQL_SSL_CA"],
         )
 
     from flask_app.controllers.routes import register_routes
