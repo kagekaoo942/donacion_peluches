@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS peluches (
     usuario_id INT NOT NULL,
     adoptado_por INT NULL,
     visitas INT NOT NULL DEFAULT 0,
+    UNIQUE KEY nombre_peluche_unico (nombre),
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
     FOREIGN KEY (adoptado_por) REFERENCES usuarios(id)
 );

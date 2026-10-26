@@ -122,6 +122,10 @@ def register_routes(app: Flask):
                 "descripcion": request.form.get("descripcion", ""),
             }
             nombre, descripcion, errors = validate_toy_data(request.form)
+            if get_db().execute(
+                "SELECT 1 FROM peluches WHERE nombre = ?", (nombre,)
+            ).fetchone():
+                errors.append("Ya existe un peluche con ese nombre.")
             if not errors:
                 db = get_db()
                 db.execute(
@@ -159,6 +163,11 @@ def register_routes(app: Flask):
                 "descripcion": request.form.get("descripcion", ""),
             }
             nombre, descripcion, errors = validate_toy_data(request.form)
+            if get_db().execute(
+                "SELECT 1 FROM peluches WHERE nombre = ? AND id <> ?",
+                (nombre, peluche_id),
+            ).fetchone():
+                errors.append("Ya existe otro peluche con ese nombre.")
             if not errors:
                 db.execute(
                     "UPDATE peluches SET nombre = ?, descripcion = ? WHERE id = ?",
