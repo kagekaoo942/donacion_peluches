@@ -11,7 +11,8 @@ class Database:
     def execute(self, query, parameters=()):
         # Los controladores usan ? porque es una notación cómoda y conocida;
         # aquí la convertimos al formato %s que espera el conector de MySQL.
-        cursor = self.connection.cursor(dictionary=True)
+        # buffered=True evita el error "InternalError: Unread result found" con fetchone()
+        cursor = self.connection.cursor(dictionary=True, buffered=True)
         cursor.execute(query.replace("?", "%s"), parameters)
         return cursor
 
@@ -31,8 +32,8 @@ def connection_options(host, port, user, password, database=None, ssl_ca=None):
     }
     if database:
         options["database"] = database
-    if ssl_ca:
-        options["ssl_ca"] = ssl_ca
+    if ssl_ca and Path(ssl_ca).exists():
+        options["ssl_ca"] = str(Path(ssl_ca).resolve())
         options["ssl_verify_cert"] = True
         options["ssl_verify_identity"] = True
     return options
@@ -65,16 +66,48 @@ def close_db(exception=None):
 def init_db(schema_file, host, port, user, password, database, ssl_ca=None):
     # El esquema vive en un archivo SQL para que también pueda ejecutarse
     # directamente desde MySQL Workbench y no quede escondido en Python.
-    schema = Path(schema_file).read_text(encoding="utf-8")
-    connection = mysql.connector.connect(
-        **connection_options(host, port, user, password, ssl_ca=ssl_ca)
-    )
+    schema_path = Path(schema_file)
+    if not schema_path.exists():
+        return
+    schema = schema_path.read_text(encoding="utf-8")
+
+    # Intentamos conectar directamente a la base de datos configurada
+    try:
+        connection = mysql.connector.connect(
+            **connection_options(
+                host, port, user, password, database=database, ssl_ca=ssl_ca
+            )
+        )
+    except mysql.connector.Error as err:
+        # Si la base de datos no existe (error 1049: Unknown database), intentar crearla
+        if getattr(err, "errno", None) == 1049:
+            admin_conn = mysql.connector.connect(
+                **connection_options(host, port, user, password, ssl_ca=ssl_ca)
+            )
+            admin_cur = admin_conn.cursor()
+            admin_cur.execute(f"CREATE DATABASE IF NOT EXISTS `{database}`")
+            admin_conn.commit()
+            admin_cur.close()
+            admin_conn.close()
+            connection = mysql.connector.connect(
+                **connection_options(
+                    host, port, user, password, database=database, ssl_ca=ssl_ca
+                )
+            )
+        else:
+            raise err
+
     cursor = connection.cursor()
     try:
         for statement in schema.split(";"):
             statement = statement.strip()
-            if statement:
-                cursor.execute(statement)
+            if not statement:
+                continue
+            upper_stmt = statement.upper()
+            # Ignorar sentencias CREATE DATABASE o USE porque ya estamos conectados a la BD
+            if upper_stmt.startswith("CREATE DATABASE") or upper_stmt.startswith("USE "):
+                continue
+            cursor.execute(statement)
         connection.commit()
     finally:
         cursor.close()
