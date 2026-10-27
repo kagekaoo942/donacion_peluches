@@ -19,7 +19,7 @@
     {% endwith %}
 
     <header class="encabezado">
-      <h1>Bienvenido {{ g.user["nombre"] }}</h1>
+      <h1>Bienvenid@ {{ g.user["nombre"] }}</h1>
       <div class="botones">
         <a href="{{ url_for('nueva') }}" class="boton">Donar Peluche</a>
         <a href="{{ url_for('logout') }}" class="boton">Cerrar Sesión</a>
